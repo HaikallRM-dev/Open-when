@@ -1,0 +1,136 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #fff0f3;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    text-align: center;
+    max-width: 600px;
+    width: 100%;
+}
+
+h1 {
+    color: #d81b60;
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    color: #888;
+    margin-bottom: 30px;
+}
+
+.envelope-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+}
+
+/* Reka Bentuk Sampul Surat */
+.envelope {
+    background-color: #ffccd5;
+    border-radius: 12px;
+    padding: 25px 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    transition: transform 0.3s, background-color 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.envelope:hover {
+    transform: translateY(-5px);
+    background-color: #ffb3c1;
+}
+
+.envelope-title {
+    font-weight: 600;
+    color: #590d22;
+    display: block;
+    font-size: 16px;
+}
+
+.status-badge {
+    font-size: 12px;
+    background: #fff;
+    padding: 3px 8px;
+    border-radius: 20px;
+    color: #d81b60;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+.envelope.opened {
+    background-color: #e9ecef;
+    opacity: 0.8;
+}
+
+.envelope.opened .status-badge {
+    background: #adb5bd;
+    color: #fff;
+}
+
+/* Modal / Paparan Surat dengan Animasi */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.modal-content {
+    background: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    max-width: 500px;
+    width: 100%;
+    text-align: left;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    animation: popUp 0.4s ease-out;
+}
+
+@keyframes popUp {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.modal-content h2 {
+    color: #d81b60;
+    border-bottom: 2px solid #ffccd5;
+    padding-bottom: 10px;
+    margin-top: 0;
+}
+
+.letter-body {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #333;
+    margin: 20px 0;
+    white-space: pre-line; /* Kekalkan bentuk perenggan ayat anda */
+}
+
+.modal-content button {
+    background-color: #d81b60;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    float: right;
+}
+
+.modal-content button:hover {
+    background-color: #ad1457;
+}

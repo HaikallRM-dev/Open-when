@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open When Letters ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-midnight: #0b132b;
+            --card-vintage: #fdf0d5;
+            --text-main: #333333;
+            --text-light: #fdf0d5;
+            --accent-gold: #e0a96d;
+            --shadow: rgba(0, 0, 0, 0.4);
+        }
+
+        [data-theme="dark"] {
+            --bg-midnight: #05070d;
+            --card-vintage: #1c2541;
+            --text-main: #fdf0d5;
+            --accent-gold: #ffb703;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-midnight);
+            color: var(--text-light);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+            transition: background 0.4s ease;
+        }
+
+        /* Latar Belakang Malam Berbintang */
+        .stars-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 40px 70px, #ffd166, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 90px 40px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 160px 120px, #ffd166, rgba(0,0,0,0)),
+                radial-gradient(1.5px 1.5px at 230px 200px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 300px 80px, #ffffff, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 350px 350px;
+            opacity: 0.4;
+            animation: twinkle 6s infinite alternate;
+            z-index: -1;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.3; transform: scale(1); }
+            100% { opacity: 0.7; transform: scale(1.02); }
+        }
+
+        /* Animasi Kelopak Bunga Jatuh di Latar Belakang */
+        .petal-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .petal {
+            position: absolute;
+            top: -10%;
+            background: linear-gradient(135deg, #ffccd5, #ffb3c1);
+            border-radius: 150% 0 150% 0;
+            animation: fallPetal linear infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes fallPetal {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0.8;
+            }
+            50% {
+                transform: translateY(50vh) translateX(50px) rotate(180deg);
+            }
+            100% {
+                transform: translateY(110vh) translateX(-50px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            padding: 25px;
+            text-align: center;
+            box-sizing: border-box;
+            z-index: 2;
+        }
+
+        #welcomeScreen {
+            animation: fadeIn 0.8s ease;
+        }
+
+        .welcome-card {
+            background: rgba(28, 37, 65, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(224, 169, 109, 0.3);
+            padding: 45px 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px var(--shadow);
+        }
+
+        .welcome-card h1 {
+            font-family: 'Playfair Display', serif;
+            color: var(--accent-gold);
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .welcome-card p {
+            color: var(--text-light);
+            opacity: 0.85;
+            line-height: 1.7;
+            margin-bottom: 35px;
+            font-size: 15px;
+        }
+
+        .btn-start {
+            background-color: var(--accent-gold);
+            color: #0b132b;
+            border: none;
+            padding: 14px 40px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            box-shadow: 0 4px 15px rgba(224, 169, 109, 0.4);
+        }
+
+        .btn-start:hover {
+            transform: scale(1.05);
+            background-color: #ffb703;
+        }
+
+        #appScreen {
+            display: none;
+            animation: fadeIn 0.8s ease;
+            position: relative;
+        }
+
+        /* Kotak Butang Kawalan di Penjuru Skrin */
+        .corner-controls {
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .control-btn {
+            background: rgba(28, 37, 65, 0.9);
+            border: 1px solid rgba(224, 169, 109, 0.4);
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 10px var(--shadow);
+            font-size: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.2s, background 0.2s;
+            color: var(--text-light);
+        }
+
+        .control-btn:hover {
+            transform: scale(1.1);
+            background: rgba(224, 169, 109, 0.2);
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--accent-gold);
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            opacity: 0.7;
+            margin-bottom: 30px;
+        }
+
+        /* Kontena Paparan Berstruktur Kategori */
+        .categories-container {
+            max-height: 65vh;
+            overflow-y: auto;
+            padding-right: 8px;
+            text-align: left;
+        }
+
+        .categories-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        .categories-container::-webkit-scrollbar-thumb {
+            background: rgba(224, 169, 109, 0.3);
+            border-radius: 10px;
+        }
+
+        .category-section {
+            margin-bottom: 30px;
+        }
+
+        .category-title {
+            font-family: 'Playfair Display', serif;
+            color: var(--accent-gold);
+            font-size: 18px;
+            border-bottom: 1px dashed rgba(224, 169, 109, 0.4);
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+        }
+
+        .envelope-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        /* Sampul Surat Gaya Buku Skrap */
+        .envelope {
+            border-radius: 12px;
+            padding: 35px 20px 20px 20px;
+            cursor: pointer;
+            box-shadow: 0 6px 15px var(--shadow);
+            position: relative;
+            transition: transform 0.3s, box-shadow 0.3s;
+            overflow: visible;
+        }
+
+        .envelope:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 22px var(--shadow);
+        }
+
+        .scrapbook-emotions {
+            background-color: #fcefee;
+            border: 2px dashed #e29578;
+        }
+        .scrapbook-emotions .envelope-flap { background-color: #ffccd5; border-bottom: 1px solid #ff8fa3; }
+
+        .scrapbook-romance {
+            background-color: #f4eeff;
+            border: 2px dotted #b5838d;
+        }
+        .scrapbook-romance .envelope-flap { background-color: #cdb4db; border-bottom: 1px solid #a3c4f3; }
+
+        .scrapbook-casual {
+            background-color: #eaf4f4;
+            border: 2px solid #8ab17d;
+        }
+        .scrapbook-casual .envelope-flap { background-color: #bcee6b; border-bottom: 1px solid #606c38; }
+
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            clip-path: polygon(0 0, 50% 100%, 100% 0);
+            transform-origin: top;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .envelope.opening .envelope-flap {
+            transform: rotateX(180deg);
+        }
+
+        .envelope-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .envelope-title {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: #2b2d42;
+            font-size: 14px;
+            display: block;
+            margin-top: 10px;
+        }
+
+        .status-badge {
+            font-size: 10px;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 3px 10px;
+            border-radius: 20px;
+            color: #bc6c25;
+            margin-top: 12px;
+            display: inline-block;
+            font-weight: 500;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .envelope.opened {
+            background-color: #e9ecef !important;
+            opacity: 0.75;
+            border-color: #adb5bd !important;
+        }
+        .envelope.opened .envelope-flap {
+            background-color: #ced4da !important;
+        }
+        .envelope.opened .status-badge {
+            background: #dee2e6;
+            color: #6c757d;
+        }
+        .envelope.opened .envelope-title {
+            color: #495057;
+        }
+
+        /* Animasi Partikel Hati & Bunga On-Click */
+        .click-particle {
+            position: absolute;
+            font-size: 18px;
+            pointer-events: none;
+            animation: floatUpParticle 0.9s ease-out forwards;
+            z-index: 50;
+        }
+
+        @keyframes floatUpParticle {
+            0% {
+                transform: translate(0, 0) scale(0.5);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--dx), var(--dy)) scale(1.4);
+                opacity: 0;
+            }
+        }
+
+        /* Modal Mesej */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 7, 13, 0.8);
+            backdrop-filter: blur(6px);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 100;
+        }
+
+        .modal-content {
+            padding: 40px;
+            border-radius: 18px;
+            max-width: 500px;
+            width: 100%;
+            text-align: left;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            animation: popUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            border: 2px solid rgba(224, 169, 109, 0.4);
+            overflow: hidden;
+        }
+
+        .modal-content::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 15px 25px, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1.5px 1.5px at 60px 140px, rgba(255,255,255,0.6), transparent),
+                radial-gradient(2px 2px at 120px 80px, rgba(255,230,150,0.7), transparent),
+                radial-gradient(1px 1px at 200px 200px, rgba(255,255,255,0.9), transparent),
+                radial-gradient(2px 2px at 300px 50px, rgba(255,255,255,0.5), transparent);
+            background-repeat: repeat;
+            background-size: 300px 300px;
+            animation: snowFall 8s linear infinite;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        @keyframes snowFall {
+            0% { transform: translateY(-100px); }
+            100% { transform: translateY(300px); }
+        }
+
+        .theme-sad { background-color: #1c2541; color: #fdf0d5; }
+        .theme-miss { background-color: #0b132b; color: #fdf0d5; }
+        .theme-angry { background-color: #2b2d42; color: #fdf0d5; }
+        .theme-happy { background-color: #fdf0d5; color: #333333; }
+        .theme-hug { background-color: #ffb3c1; color: #590d22; }
+        .theme-sleep { background-color: #070913; color: #a9d6e5; }
+        .theme-default { background-color: #fdf0d5; color: #333333; }
+
+        @keyframes popUp {
+            0% { transform: scale(0.7); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-content h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            border-bottom: 2px solid rgba(224, 169, 109, 0.3);
+            padding-bottom: 12px;
+            margin-top: 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .letter-body {
+            font-family: 'Playfair Display', serif;
+            font-size: 15px;
+            line-height: 1.8;
+            margin: 20px 0;
+            white-space: pre-line;
+            font-style: italic;
+            position: relative;
+            z-index: 2;
+        }
+
+        .btn-close {
+            background-color: var(--accent-gold);
+            color: #0b132b;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            float: right;
+            transition: opacity 0.2s;
+            position: relative;
+            z-index: 2;
+        }
+
+        .btn-close:hover {
+            opacity: 0.85;
+        }
+
+        /* Modal Tetapan */
+        .settings-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+
+        .settings-content {
+            background: #1c2541;
+            color: #fdf0d5;
+            padding: 30px;
+            border-radius: 16px;
+            width: 320px;
+            text-align: left;
+            border: 1px solid rgba(224, 169, 109, 0.3);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .setting-item select, .setting-item input[type="checkbox"] {
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px solid #e0a96d;
+            background: #0b132b;
+            color: #fdf0d5;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="stars-bg"></div>
+    <div class="petal-container" id="petalContainer"></div>
+
+    <!-- Audio Background: Yiruma - River Flows In You (Bahagian Chorus bermula minit ke-30 / 30s) -->
+    <audio id="bgMusic" loop>
+        <source src="https://cdns.jukehost.co.uk/N2r5q8w2m1k4" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <div class="container">
+        <!-- 1. SKRIN UTAMA -->
+        <div id="welcomeScreen">
+            <div class="welcome-card">
+                <h1 id="txtWelcomeTitle">Open When Letters ❤️</h1>
+                <p id="txtWelcomeDesc">This is from me to you. Koleksi warkah peribadi di bawah langit malam, ikhlas ditulis khas untuk temani hari-hari awak. Pilih sampul surat mengikut isi hati awak saat ini.</p>
+                <button class="btn-start" id="btnStart" onclick="startApp()">Buka Warkah</button>
+            </div>
+        </div>
+
+        <!-- 2. SKRIN DASHBOARD -->
+        <div id="appScreen">
+            <!-- Butang Kawalan Muzik & Tetapan di Penjuru Skrin -->
+            <div class="corner-controls">
+                <button class="control-btn" id="musicToggleBtn" onclick="toggleMusic()" title="Play/Pause Muzik">🎵</button>
+                <button class="control-btn" onclick="openSettings()" title="Tetapan">⚙️</button>
+            </div>
+
+            <h2 id="txtDashTitle">Open When...</h2>
+            <p class="subtitle" id="txtDashSub">Sentuh mana-mana sampul surat untuk membaca warkah</p>
+
+            <div class="categories-container">
+                <!-- KATEGORI 1 -->
+                <div class="category-section">
+                    <div class="category-title" id="catEmotionsTitle">✨ Emosi & Perasaan Harian</div>
+                    <div class="envelope-grid">
+                        <div class="envelope scrapbook-emotions" data-id="sad" onclick="openEnvelope('sad', event, this)">
+                            <div class="envelope-flap"></div>
+                            <div class="envelope-content">
+                                <span class="envelope-title">Open When You're Sad</span>
+                                <span class="status-badge" id="badge-sad">Belum Buka</span>
+                            </div>
+                        </div>
+                        <div class="envelope scrapbook-emotions" data-id="crying" onclick="openEnvelope('crying', event, this)">
+                            <div class="envelope-flap"></div>
+                            <div class="envelope-content">
+                                <span class="envelope-title">Open When You're Crying</span>
+                                <span class="status-badge" id="badge-crying">Belum Buka</span>
+                            </div>
+                        </div>
+                        <div class="envelope scrapbook-emotions" data-id="stressed" onclick="openEnvelope('stressed', event, this)">
+                            <div class="envelope-flap"></div>
+                            <div class="envelope-content">
+                                <span class="envelope-title">Open When You're Stressed</span>
+                                <span class="status-badge" id="badge-stressed">Belum Buka</span>
+                            </div>
+                        </div>
+                        <div class="envelope scrapbook-emotions" data-id="lonely" onclick="openEnvelope('lonely', event, this)">
+                            <div class="envelope-flap"></div>
+                            <div class="envelope-content">
+                                <span class="envelope-title">Open When You Feel Lonely</span>
+                                <span class="status-badge" id="badge-lonely">Belum Buka</span>
+                            </div>
+                        </div>
+                        <div class="envelope scrapbook-emotions" data-id="motivation" onclick="openEnvelope('motivation', event, this)">
+                            <div class="envelope-flap"></div>
+                            <div class="envelope-content">
+                                <span class="envelope-title">Open When You Need Motivation</span>
+                                <span class="status-badge" id="badge-motivation">Belum Buka</span>
+                            </div>
+                        </div>
+                        <div class="envelope scrapbook-emotions" data-id="insecure" onclick="openEnvelope('insecure', event, this)">
+                            <div class="envelope-flap"></div>
+                            <div class="envelope-content">
+                                <span class="envelope-title">Open When You Feel Insecure</span>
+                                <span class="status-badge" id="badge-insecure">Belum Buka</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KATEGORI 2 -->
+                <div class="category-section">
+                    <div class="category-title" id="catRomanceTitle">💌 Momen Hubungan Kita</div>
+                    <div class="envelope-grid">
+                        <div class="envelope scrapbook-romance" data-id="miss" onclick="openEnvelope('miss', event, this)">
+                            <div class="envelope-flap"></div>
+                            <div class="envelope-content">
+                                <span class="envelope-title">Open When You Miss Me</span>
+                                <span class="status-badge" id="badge-miss">Belum Buka</span>
+                            </div>
+                        </div>
+                        <div class="envelope scrapbook-romance" data-id="argument" onclick="openEnvelope('argument', event, this)">
+                            <div class="envelope-flap"></div>
+                            <div class="envelope-content">
+                                <span class="envelope-title">Open When We Just Had An Argument</span>
+                                <span class="status-badge" id="badge-argument">Belum Buka</span>
+                            </div>
+                        </div>
+                        <div class="envelope scrapbook-romance" data-id="loved" onclick="openEnvelope('loved', event, this)">
+                            <div class="envelope-flap"></div>
+                            <div class="envelope-content">
+                                <span class="envelope-title">Open When You Want To Feel Loved</span>
+                                <span class="status-badge" id="badge-loved">Belum Buka</span>
+                            </div>
+                        </div>
+                        <div class="envelope scrapbook-romance" data-id="future" onclick="openEnvelope('future', event, this)">
+                            <div class="envelope-flap"></div>
+                            <div class="envelope-content">
+                                <span class="envelope-title">Open When You Think About Our Future</span>
+                                <span class="status-badge" id="badge-future">Belum Buka</span>
+                            </div>
+                        </div>
+                        <div class="envelope scrapbook-romance" data-id="started" onclick="openEnvelope('started', event, this)">
+                            <div class="envelope-flap"></div>
+                            <div class="envelope-content">
+                                <span class="envelope-title">Open When You Need A Reminder Of Us</span>
+                                <span class="status-badge" id="badge-started">Belum Buka</span>
+                            </div>
+                        </div>
+                        <div class="envelope scrapbook-romance" data-id="hug" onclick="openEnvelope('hug', event, this)">
+                            <div class="envelope-flap"></div>
+                            <div class="envelope-content">
+                                <span class="envelope-title">Open When You Need A Virtual Hug</span>
+                                <span class="status-badge" id="badge-hug">Belum Buka</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KATEGORI 3 -->
+                <div class="category-section">
+                    <div class="category-title" id="catCasualTitle">☕ Situasi Harian & Santai</div>
+                    <div class="envelope-grid">
+                        <div class="envelope scrapbook-casual" data-id="greatday" onclick="openEnvelope('greatday', event, this)">
+                            <div class="envelope-flap"></div>
+                            <div class="envelope-content">
+                                <span class="envelope-title">Open When You Had A Great Day</span>
+                                <span class="status-badge" id="badge-greatday">Belum Buka</span>
+                            </div>
+                        </div>
+                        <div class="envelope scrapbook-casual" data-id="bored" onclick="openEnvelope('bored', event, this)">
+                            <div class="envelope-flap"></div>
+                            <div class="envelope-content">
+                                <span class="envelope-title">Open When You Are Bored</span>
+                                <span class="status-badge" id="badge-bored">Belum Buka</span>
+                            </div>
+                        </div>
+                        <div class="envelope scrapbook-casual" data-id="achievement" onclick="openEnvelope('achievement', event, this)">
+                            <div class="envelope-flap"></div>
+                            <div class="envelope-content">
+                                <span class="envelope-title">Open When You Have A Big Achievement</span>
+                                <span class="status-badge" id="badge-achievement">Belum Buka</span>
+                            </div>
+                        </div>
+                        <div class="envelope scrapbook-casual" data-id="sleep" onclick="openEnvelope('sleep', event, this)">
+                            <div class="envelope-flap"></div>
+                            <div class="envelope-content">
+                                <span class="envelope-title">Open When You Cannot Sleep</span>
+                                <span class="status-badge" id="badge-sleep">Belum Buka</span>
+                            </div>
+                        </div>
+                        <div class="envelope scrapbook-casual" data-id="hungry" onclick="openEnvelope('hungry', event, this)">
+                            <div class="envelope-flap"></div>
+                            <div class="envelope-content">
+                                <span class="envelope-title">Open When You Are Hungry</span>
+                                <span class="status-badge" id="badge-hungry">Belum Buka</span>
+                            </div>
+                        </div>
+                        <div class="envelope scrapbook-casual" data-id="laugh" onclick="openEnvelope('laugh', event, this)">
+                            <div class="envelope-flap"></div>
+                            <div class="envelope-content">
+                                <span class="envelope-title">Open When You Need A Good Laugh</span>
+                                <span class="status-badge" id="badge-laugh">Belum Buka</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. MODAL MESEJ -->
+    <div class="modal" id="messageModal">
+        <div class="modal-content" id="modalBoxTheme">
+            <h3 id="modalCategoryTitle"></h3>
+            <div class="letter-body" id="modalText"></div>
+            <button class="btn-close" id="btnCloseLetter" onclick="closeModal()">Tutup Warkah</button>
+        </div>
+    </div>
+
+    <!-- 4. MODAL TETAPAN -->
+    <div class="settings-modal" id="settingsModal">
+        <div class="settings-content">
+            <h3 id="txtSettingsTitle" style="color: var(--accent-gold); margin-top:0;">Tetapan Aplikasi</h3>
+            <div class="setting-item">
+                <span id="txtDarkModeLabel">Mod Gelap (Dark Mode)</span>
+                <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+            </div>
+            <div class="setting-item">
+                <span id="txtLangLabel">Bahasa (Language)</span>
+                <select id="langSelect" onchange="changeLanguage()">
+                    <option value="ms">Bahasa Melayu</option>
+                    <option value="en">English</option>
+                </select>
+            </div>
+            <button class="btn-close" id="txtSaveClose" style="width:100%; float:none;" onclick="closeSettings()">Simpan & Tutup</button>
+        </div>
+    </div>
+
+    <script>
+        const messagesData = {
+            sad: {
+                title: { ms: "Open When You're Sad", en: "Open When You're Sad" },
+                text: { 
+                    ms: "Sayangku, janganlah sedih. Saya tak nak awak sedih-sedih, saya tak nak awak nangis muka monyok ni. Jangan risau saya kan ada, saya kan selalu ada dengan awak. Walaupun saya jauh, tapi saya dekat dengan hati awak.",
+                    en: "My love, please don't be sad. I don't want to see you looking gloomy. Don't worry, I am always here with you. Even if we're far apart, I'm close to your heart."
+                },
+                theme: "theme-sad"
+            },
+            crying: {
+                title: { ms: "Open When You're Crying", en: "Open When You're Crying" },
+                text: {
+                    ms: "Sayang, tarik nafas dalam-dalam dan jangan sedih. Saya tak nak tengok awak nangis sayangku. No worries, sorry kalau saya buat awak sakit, dan sorry saya tak ada dengan awak kalau awak perlukan saya. Saya sentiasa ada dekat dengan awak dalam awak tak sedar. I always love you.",
+                    en: "Breathe deeply, my love. I hate seeing you cry. No worries, I'm sorry if I ever hurt you or if I'm not physically there when you need me. I'm always close by even when you don't realize it. I always love you."
+                },
+                theme: "theme-sad"
+            },
+            stressed: {
+                title: { ms: "Open When You're Stressed", en: "Open When You're Stressed" },
+                text: {
+                    ms: "Hei awak stress ke tu, hahaha dah jangan stress. Jangan difikirkan, let it go sahaja. Saya pun tahu awak stress macam mana tapi rileks dulu, tarik nafas dalam-dalam. Jangan fikirkan stress tu. Awak rehatlah dulu, tutup phone or etc yang berkaitan dengan stress tu. Rehat sekejap. Masalah itu boleh selesai, tapi yang penting kesihatan mental dan fizikal awak.",
+                    en: "Hey, are you stressed? Haha, let it go. I know how heavy things can feel right now, but just take a deep breath. Put your phone away and rest for a bit. Problems can be solved, but your mental and physical health come first."
+                },
+                theme: "theme-angry"
+            },
+            lonely: {
+                title: { ms: "Open When You Feel Lonely", en: "Open When You Feel Lonely" },
+                text: {
+                    ms: "Hai sayang, awak rasa lonely ke tu? Hahaha, janganlah rasa macam tu, sebab tu saya buat surat ini sebab tak nak awak rasa lonely. Rasa lonely itu biasa kalau awak tak ada bersama saya, atau mungkin saya ada tapi busy. Btw jangan risau, walaupun awak rasa macam tu, ingatlah yang hati kita tetap dekat, dan rasa sayang dalam diri saya ini tak pernah ubah terhadap awak. Saya sentiasa ada dalam doa awak.",
+                    en: "Hey love, feeling lonely? Haha, don't feel that way—that's why I made this letter! Feeling lonely is normal when we're apart or when I'm busy. But don't worry, our hearts are always connected, and my love for you never changes. You're always in my prayers."
+                },
+                theme: "theme-miss"
+            },
+            motivation: {
+                title: { ms: "Open When You Need Motivation", en: "Open When You Need Motivation" },
+                text: {
+                    ms: "Yow, bangkit sikit! Awak tu kan dah hebat, dah pandai berdikari, dah pandai buat macam-macam. Orang di sebaya awak masih bertatih, tapi awak dah sampai ke tahap ni, saya bangga dengan awak. Awak lebih hebat daripada yang awak sangka.",
+                    en: "Hey, time to rise up! You're already amazing, independent, and capable of so much. Look at how far you've come. I am so proud of you, and you're far stronger and more capable than you realize."
+                },
+                theme: "theme-happy"
+            },
+            insecure: {
+                title: { ms: "Open When You Feel Insecure", en: "Open When You Feel Insecure" },
+                text: {
+                    ms: "Kenapa tiba-tiba rasa insecure ni? Janganlah rasa macam tu, awak tetap cantik dan menawan di mata saya. Aciahh.",
+                    en: "Why are you suddenly feeling insecure? Don't ever think like that—you are always stunning and wonderful in my eyes. Seriously!"
+                },
+                theme: "theme-hug"
+            },
+            miss: {
+                title: { ms: "Open When You Miss Me", en: "Open When You Miss Me" },
+                text: {
+                    ms: "Rindu saya ke tu? Heheh saya pun sama, saya sentiasa merindukan awak. Kalau rindu sangat tengoklah gambar kita. I mean bukan gambar yang latest-latest kita, tapi gambar first kita ambil dekat mall Kuantan tu. Nanti kita sama-sama free kita luang waktu bersama-sama yee. Love you sayang.",
+                    en: "Missing me already? Heheh, me too. Whenever you miss me, look at our pictures—especially the very first one we took together at the Kuantan mall. When we're both free soon, we'll spend all the time together. Love you!"
+                },
+                theme: "theme-miss"
+            },
+            argument: {
+                title: { ms: "Open When We Just Had An Argument", en: "Open When We Just Had An Argument" },
+                text: {
+                    ms: "Maafkan saya kalau saya terkasar bahasa, saya menyakitkan hati awak. Sorry saya ni tak sempurna, maaf tak mampu jaga awak dengan baik. Maaf jika tindakan saya tadi mengguris hati awak. We need to take time dengan diri masing-masing, dah lepas dah okay kita bincang elok-elok okay.",
+                    en: "I'm sorry if my words were harsh or if I hurt your feelings. I'm not perfect, and I'm sorry if I didn't handle things well. Let's both take a little breathing room, and when we're calm, we'll talk it through nicely, okay?"
+                },
+                theme: "theme-angry"
+            },
+            loved: {
+                title: { ms: "Open When You Want To Feel Loved", en: "Open When You Want To Feel Loved" },
+                text: {
+                    ms: "Peringatan rasmi hari ini: Awak sangat disayangi, awak sangat dicintai, awak memang milik saya sepenuhnya. Muahh love you.",
+                    en: "Official daily reminder: You are deeply cherished, endlessly loved, and completely mine. Muahh, love you!"
+                },
+                theme: "theme-hug"
+            },
+            future: {
+                title: { ms: "Open When You Think About Our Future", en: "Open When You Think About Our Future" },
+                text: {
+                    ms: "Seronok kan berangan pasal masa depan? Saya pun selalu bayangkan hari di mana kita dah capai semua impian kita, hidup tenang dan gembira bersama. Teruskan berusaha untuk diri sendiri dan kita, masa depan cerah menanti kita!",
+                    en: "Isn't it nice dreaming about the future? I always picture the day we achieve all our goals and live happily together. Keep pushing forward for yourself and for us—a bright future awaits us!"
+                },
+                theme: "theme-happy"
+            },
+            started: {
+                title: { ms: "Open When You Need A Reminder Of Us", en: "Open When You Need A Reminder Of Us" },
+                text: {
+                    ms: "Ingat lagi tak macam mana kita kenal dulu? I mean waktu kita first jump. Dan waktu kita jumpa dekat pantai tu, awak berseri-seri sangat dan wajah awak penuh dengan senyuman manis. Perasaan saya dekat awak tak pernah surut.",
+                    en: "Remember how we first met? And that time we went to the beach—you were glowing, and your smile was so bright. My feelings for you have never faded since that day."
+                },
+                theme: "theme-miss"
+            },
+            greatday: {
+                title: { ms: "Open When You Had A Great Day", en: "Open When You Had A Great Day" },
+                text: {
+                    ms: "Yay, saya tumpang gembira untuk awak. Senyuman awak tu mahal! Jadi senyumlah selalu. Always smile my sweetheart. Jangan senyum dekat orang lain pula ye.. teruskan senyum dan kekalkan tenaga positif ini. Nanti belanja saya sikit senyuman awak hari ini, heheh.",
+                    en: "Yay, I'm so happy for you! Your smile is precious, so keep smiling always. Just don't flash that gorgeous smile too much at anyone else, haha. Keep this positive energy going!"
+                },
+                theme: "theme-happy"
+            },
+            bored: {
+                title: { ms: "Open When You Are Bored", en: "Open When You Are Bored" },
+                text: {
+                    ms: "Bosan ke? Cuba pergi minum air dulu, cuba pergi buat kek dulu, cuba baca buku dulu, awak kan suka buat research. Kalau tak jadi jugak, cuba cari makan sedap-sedap then kita last minute dating, ehh.",
+                    en: "Bored? Go drink some water, bake a cake, or read a book—you love doing research anyway! If none of that works, grab some good food and let's go on a spontaneous last-minute date, eh?"
+                },
+                theme: "theme-default"
+            },
+            achievement: {
+                title: { ms: "Open When You Have A Big Achievement", en: "Open When You Have A Big Achievement" },
+                text: {
+                    ms: "Tahniah sayang, tahniah sebab dah berjaya ke tahap ini, saya tumpang gembira untuk awak. You did it my love.",
+                    en: "Congratulations, my love! I'm so incredibly proud of you for reaching this milestone. You totally did it!"
+                },
+                theme: "theme-happy"
+            },
+            sleep: {
+                title: { ms: "Open When You Cannot Sleep", en: "Open When You Cannot Sleep" },
+                text: {
+                    ms: "Belum tidur lagi? Mata tu dah penat kan? Letak telefon jauh-jauh, tarik nafas perlahan-lahan. Bayangkan saya sedang ehem-ehem dengan awak, ehh salah ehh. Dah lah, pergi lah tidur sambil peluk saya, saya mesti dah tidur berdengkur tuu.",
+                    en: "Still awake? Your eyes must be tired. Put the phone away, breathe slowly, and go to sleep while imagining holding me tight (well, I'm probably snoring away by now!)."
+                },
+                theme: "theme-sleep"
+            },
+            hungry: {
+                title: { ms: "Open When You Are Hungry", en: "Open When You Are Hungry" },
+                text: {
+                    ms: "Perut berkeroncong ke? Muhahahaha. Pergilah cari makan sebelum awak moody, nanti saya yang kena lol. Kalau tak ada makanan, makan saya pun jadi lah, ehh salah ehh.",
+                    en: "Stomach rumbling? Hahaha. Go grab something delicious before you get hangry and take it out on me! If there's no food left, well... you can eat me instead? Wait, scratch that!"
+                },
+                theme: "theme-default"
+            },
+            laugh: {
+                title: { ms: "Open When You Need A Good Laugh", en: "Open When You Need A Good Laugh" },
+                text: {
+                    ms: "Cuba bayangkan kalau kita jadi kucing, agak-siapa yang paling manja? Semestinya Tuti yang paling comell.",
+                    en: "Imagine if we turned into cats—who would be the clingiest? Obviously Tuti the cat is the cutest of them all!"
+                },
+                theme: "theme-happy"
+            },
+            hug: {
+                title: { ms: "Open When You Need A Virtual Hug", en: "Open When You Need A Virtual Hug" },
+                text: {
+                    ms: "Pelukan maya sedang dimuat turun... 10%... 50%... 100%! Pelukan erat berjaya dihantar. Rasai kehangatan pelukan ni dan senyumlah, awak sentiasa di dalam hati saya.",
+                    en: "Virtual hug downloading... 10%... 50%... 100%! A warm, tight hug has been successfully delivered. Feel its warmth and smile—you are always in my heart."
+                },
+                theme: "theme-hug"
+            }
+        };
+
+        // Penjanaan Kelopak Bunga Jatuh secara Dinamik
+        function createPetals() {
+            const container = document.getElementById('petalContainer');
+            const petalCount = 18;
+
+            for (let i = 0; i < petalCount; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'petal';
+                
+                const size = 10 + Math.random() * 12;
+                petal.style.width = size + 'px';
+                petal.style.height = size * 1.4 + 'px';
+                petal.style.left = Math.random() * 100 + 'vw';
+                
+                const duration = 6 + Math.random() * 7;
+                const delay = Math.random() * 8;
+                petal.style.animationDuration = duration + 's';
+                petal.style.animationDelay = delay + 's';
+
+                container.appendChild(petal);
+            }
+        }
+
+        function playSoftEnvelopeSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.3);
+
+                gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+
+                osc.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.4);
+            } catch (e) {}
+        }
+
+        function createClickParticles(e) {
+            const symbols = ['❤️', '🌸', '✨', '💖', '🌷', '⭐'];
+            const rect = e.currentTarget.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const clickY = e.clientY - rect.top;
+
+            for (let i = 0; i < 6; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'click-particle';
+                particle.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+                
+                particle.style.left = clickX + 'px';
+                particle.style.top = clickY + 'px';
+
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 40 + Math.random() * 50;
+                const dx = Math.cos(angle) * distance;
+                const dy = Math.sin(angle) * distance;
+
+                particle.style.setProperty('--dx', `${dx}px`);
+                particle.style.setProperty('--dy', `${dy}px`);
+
+                e.currentTarget.appendChild(particle);
+
+                setTimeout(() => {
+                    particle.remove();
+                }, 900);
+            }
+        }
+
+        let currentLang = localStorage.getItem('lang') || 'ms';
+
+        function startApp() {
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('appScreen').style.display = 'block';
+
+            // Memainkan lagu Yiruma - River Flows In You bermula dari bahagian chorus (30 saat)
+            const bgMusic = document.getElementById('bgMusic');
+            bgMusic.currentTime = 30; 
+            bgMusic.volume = 0.4;
+            bgMusic.play().then(() => {
+                document.getElementById('musicToggleBtn').innerText = "🔊";
+            }).catch(error => {
+                console.log("Autoplay disekat pelayar, pengguna perlu kawal manual guna butang muzik.");
+                document.getElementById('musicToggleBtn').innerText = "🔇";
+            });
+        }
+
+        // Fungsi Kawalan Play/Pause Muzik di Penjuru Skrin
+        function toggleMusic() {
+            const bgMusic = document.getElementById('bgMusic');
+            const btn = document.getElementById('musicToggleBtn');
+
+            if (bgMusic.paused) {
+                if (bgMusic.currentTime < 30) {
+                    bgMusic.currentTime = 30; // Pastikan mula dari bahagian chorus jika baru reset
+                }
+                bgMusic.play();
+                btn.innerText = "🔊";
+            } else {
+                bgMusic.pause();
+                btn.innerText = "🔇";
+            }
+        }
+
+        function openEnvelope(id, event, element) {
+            const data = messagesData[id];
+            if (!data) return;
+
+            createClickParticles(event);
+            playSoftEnvelopeSound();
+            element.classList.add('opening');
+
+            setTimeout(() => {
+                document.getElementById('modalCategoryTitle').innerText = data.title[currentLang];
+                document.getElementById('modalText').innerText = data.text[currentLang];
+                
+                const modalBox = document.getElementById('modalBoxTheme');
+                modalBox.className = "modal-content " + data.theme;
+
+                document.getElementById('messageModal').style.display = 'flex';
+
+                element.classList.add('opened');
+                document.getElementById(`badge-${id}`).innerText = (currentLang === 'ms') ? 'Sudah Dibuka' : 'Opened';
+                localStorage.setItem(`envelope_${id}`, 'opened');
+            }, 600);
+        }
+
+        function closeModal() {
+            document.getElementById('messageModal').style.display = 'none';
+        }
+
+        function openSettings() {
+            document.getElementById('settingsModal').style.display = 'flex';
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').style.display = 'none';
+        }
+
+        function toggleDarkMode() {
+            const isDark = document.getElementById('darkModeToggle').checked;
+            if (isDark) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        function changeLanguage() {
+            currentLang = document.getElementById('langSelect').value;
+            localStorage.setItem('lang', currentLang);
+            updateUItext();
+        }
+
+        function updateUItext() {
+            if (currentLang === 'en') {
+                document.getElementById('txtWelcomeTitle').innerText = "Open When Letters ❤️";
+                document.getElementById('txtWelcomeDesc').innerText = "This is from me to you. A collection of personal notes under the night sky, lovingly written just to accompany your days. Pick an envelope based on how you feel right now.";
+                document.getElementById('btnStart').innerText = "Open Letters";
+                document.getElementById('txtDashTitle').innerText = "Open When...";
+                document.getElementById('txtDashSub').innerText = "Tap any envelope to read the heartfelt letter";
+                document.getElementById('btnCloseLetter').innerText = "Close Letter";
+                document.getElementById('txtSettingsTitle').innerText = "App Settings";
+                document.getElementById('txtDarkModeLabel').innerText = "Dark Mode";
+                document.getElementById('txtLangLabel').innerText = "Language";
+                document.getElementById('txtSaveClose').innerText = "Save & Close";
+
+                document.getElementById('catEmotionsTitle').innerText = "✨ Daily Emotions & Feelings";
+                document.getElementById('catRomanceTitle').innerText = "💌 Our Relationship Moments";
+                document.getElementById('catCasualTitle').innerText = "☕ Casual & Daily Situations";
+            } else {
+                document.getElementById('txtWelcomeTitle').innerText = "Open When Letters ❤️";
+                document.getElementById('txtWelcomeDesc').innerText = "This is from me to you. Koleksi warkah peribadi di bawah langit malam, ikhlas ditulis khas untuk temani hari-hari awak. Pilih sampul surat mengikut isi hati awak saat ini.";
+                document.getElementById('btnStart').innerText = "Buka Warkah";
+                document.getElementById('txtDashTitle').innerText = "Open When...";
+                document.getElementById('txtDashSub').innerText = "Sentuh mana-mana sampul surat untuk membaca warkah";
+                document.getElementById('btnCloseLetter').innerText = "Tutup Warkah";
+                document.getElementById('txtSettingsTitle').innerText = "Tetapan Aplikasi";
+                document.getElementById('txtDarkModeLabel').innerText = "Mod Gelap (Dark Mode)";
+                document.getElementById('txtLangLabel').innerText = "Bahasa (Language)";
+                document.getElementById('txtSaveClose').innerText = "Simpan & Tutup";
+
+                document.getElementById('catEmotionsTitle').innerText = "✨ Emosi & Perasaan Harian";
+                document.getElementById('catRomanceTitle').innerText = "💌 Momen Hubungan Kita";
+                document.getElementById('catCasualTitle').innerText = "☕ Situasi Harian & Santai";
+            }
+        }
+
+        window.onload = function() {
+            createPetals();
+            document.getElementById('langSelect').value = currentLang;
+            updateUItext();
+
+            for (let id in messagesData) {
+                if (localStorage.getItem(`envelope_${id}`) === 'opened') {
+                    const env = document.querySelector(`[data-id="${id}"]`);
+                    if (env) {
+                        env.classList.add('opened');
+                        document.getElementById(`badge-${id}`).innerText = (currentLang === 'ms') ? 'Sudah Dibuka' : 'Opened';
+                    }
+                }
+            }
+
+            if (localStorage.getItem('theme') === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.getElementById('darkModeToggle').checked = true;
+            }
+        };
+    </script>
+</body>
+</html>
